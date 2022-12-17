@@ -1,6 +1,7 @@
 const express=require("express");
 const user=require("../controller/userController")
 const mid=require("../mid/mid")
+
 const router=express.Router()
 
 router.get("/student",function(req,res){

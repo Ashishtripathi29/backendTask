@@ -1,10 +1,8 @@
-const express = require("express");
 const jwt = require("jsonwebtoken")
 const userSchema = require("../model/userModel")
 const studentSchema = require("../model/studentModel")
 const { str, num, pass } = require("../validation/valid");
-const { json } = require("express");
-const { findOneAndUpdate, findOne } = require("../model/studentModel");
+
 
 const createUser = async function (req, res) {
     try {
@@ -83,7 +81,7 @@ const logInUser = async function (req, res) {
         const token = jwt.sign({ userName: getUser.userName }, "backendTaskWithAshishTripathi");
 
 
-        const studentlist = await studentSchema.find({ user: userName, isDeleted: false }).select({ _id: 0, isDeleted: 0, user: 0, _id: 0, createdAt: 0, updatedAt: 0, __v: 0 }).sort({ name: 1 })
+        const studentlist = await studentSchema.find({ user: userName, isDeleted: false }).select({ _id: 0, isDeleted: 0, user: 0,createdAt: 0, updatedAt: 0, __v: 0 }).sort({ name: 1 })
 
         return res.status(200).send({ status: true, message: studentlist, token: token })
 
@@ -232,14 +230,20 @@ const EditStudent = async function (req, res) {
             name: newName,
             subject: newSubject
         }
-        if (!newName) {
-            checkData["name"] = name
-        }
-        if (!newSubject) {
-            checkData['subject'] = subject
-        }
 
+        
 
+        // if newName or newSubject is not existing
+        if (!newName ^ !newSubject) {
+           
+            if (!newName) {
+                checkData["name"] = name
+            }
+            if (!newSubject) {
+                checkData['subject'] = subject
+        }
+        console.log("ashish")
+    }
         const checkAlreadyUser = await studentSchema.findOne(checkData)
         if (checkAlreadyUser) {
             return res.status(400).send({ status: false, message: "new name and subject already exist" })
@@ -255,6 +259,7 @@ const EditStudent = async function (req, res) {
         return res.status(200).send({ status: true, message: updateData })
 
     }
+
     catch (error) {
         res.status(500).send({ status: false, message: error.message })
     }
